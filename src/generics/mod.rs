@@ -105,6 +105,7 @@ fn get_ensemble_symbol(header: String) -> Result<String, Box<dyn std::error::Err
 
     // Can I replace all of the below with something like:
     // static MASTER_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?<prot_id>ENS\w+P\d+.[0-9*])|(?<gene_id>ENS\w+G\d+.[0-9*])|(?<trans_id>ENS\w+T\d+.[0-9*])").unwrap());
+    //
 
     // Turning the REGEX compilations into Lazy statics turned testing on a 35Mb genome
     // from 16 to 5 minutes!!!

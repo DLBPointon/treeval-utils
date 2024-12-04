@@ -9,7 +9,7 @@ Much of the code used in this package has been pulled from the FasMan.
 treeval_utils [prepare_geneset | generate_csv | yaml_check] -h
 
 ### splitbycount / splitbysize
-The two functions are pretty much identicle, however, the first splits files by number of records in the input, the second splits by a given memory chunk (e.g. 10mb) without breaking a scaffold.
+The two functions are pretty much identacle, however, the first splits files by number of records in the input, the second splits by a given memory chunk (e.g. 10mb) without breaking a scaffold.
 
 Splitbysize, is not ready for produciton, due to the time it takes to execute. This indicates an error with the algorithm.
 
