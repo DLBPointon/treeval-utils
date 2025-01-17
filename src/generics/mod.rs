@@ -157,10 +157,62 @@ fn get_ensemble_symbol(header: String) -> Result<String, Box<dyn std::error::Err
 }
 
 fn get_ncbi_symbol(header: String) -> Result<String, Box<dyn std::error::Error>> {
+    println!("NCBI -- SANITISE HEADERS -- EXPERIMENTAL");
     // Take a string and return first segment of it
     let header_list: Vec<&str> = header.split(' ').collect();
     let record_header = header_list[0];
-    Ok(record_header[1..].to_owned())
+    //Ok(record_header[1..].to_owned())
+
+    // Ugly nested Lazy Regex
+    static RE_1A: Lazy<Regex> = Lazy::new(|| Regex::new(r"(NP_\S+)\s").unwrap());
+    static RE_1B: Lazy<Regex> = Lazy::new(|| Regex::new(r"\[protein_id=(.*?)\]").unwrap());
+
+    let ncbi_protein_name_capture = RE_1A
+        .captures(&header)
+        .and_then(|caps| caps.get(0))
+        .map_or("NO_PROT_NAME", |m| m.as_str());
+    let final_prot_name = if ncbi_protein_name_capture == "NO_PROT_NAME" {
+        let ncbi_prot_backup = RE_1B
+            .captures(&header)
+            .and_then(|caps| caps.get(0))
+            .map_or("NO_PROT_NAME", |m| m.as_str());
+        let final_header = if ncbi_prot_backup == "NO_PROT_NAME" {
+            "".to_string()
+        } else {
+            format!("protein_id={};", ncbi_prot_backup)
+        };
+
+        final_header
+    } else {
+        format!("protein_id={};", ncbi_protein_name_capture)
+    };
+
+    static RE_2: Lazy<Regex> = Lazy::new(|| Regex::new(r"\[gene=(.*?)\]").unwrap());
+    let ncbi_gene_capture = RE_2
+        .captures(&header)
+        .and_then(|caps| caps.get(0))
+        .map_or("NO_GENE_NAME", |m| m.as_str());
+    let final_gene_id = if ncbi_gene_capture == "NO_GENE_NAME" {
+        "".to_string()
+    } else {
+        format!("gene_id={};", ncbi_gene_capture)
+    };
+
+    static RE_3: Lazy<Regex> = Lazy::new(|| Regex::new(r"(NM_\S+)\s").unwrap());
+    let ncbi_tran_capture = RE_3
+        .captures(&header)
+        .and_then(|caps| caps.get(0))
+        .map_or("NO_TRAN_NAME", |m| m.as_str());
+    let final_tran_name = if ncbi_tran_capture == "NO_TRAN_NAME" {
+        "".to_string()
+    } else {
+        format!("transcript_id={};", ncbi_tran_capture)
+    };
+
+    Ok(format!(
+        "{}{}{}",
+        final_prot_name, final_gene_name, final_tran_name
+    ))
     // let re = Regex::new(r"gene=([A-Z]\w+)").unwrap();
 
     // let first_run = re.captures(&header).ok_or("None")?;
