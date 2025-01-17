@@ -211,7 +211,7 @@ fn get_ncbi_symbol(header: String) -> Result<String, Box<dyn std::error::Error>>
 
     Ok(format!(
         "{}{}{}",
-        final_prot_name, final_gene_name, final_tran_name
+        final_prot_name, final_gene_id, final_tran_name
     ))
     // let re = Regex::new(r"gene=([A-Z]\w+)").unwrap();
 
