@@ -45,7 +45,7 @@ pub mod yaml_validator_mod {
         phantom: PhantomData<&'a String>,
     }
 
-    impl<'a> std::fmt::Display for YamlResults<'a> {
+    impl std::fmt::Display for YamlResults<'_> {
         // Pretty Printing YamlResults
         fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
             write!(
@@ -65,6 +65,7 @@ pub mod yaml_validator_mod {
         }
     }
 
+    #[allow(elided_named_lifetimes)]
     impl<'a> YamlResults<'a> {
         fn is_cram_valid(&self) -> String {
             // this should add a field to the cram_results struct

@@ -176,8 +176,8 @@ pub mod split_by_size_mod {
                 // if adding the temp with the next line is greater than
                 // the limit then the temp is saved (above) and the new
                 // line added to the temp
-                let mut temp: Vec<IndexStruct> = Vec::new();
-                temp.push(line);
+                #[allow(unused_mut)]
+                let mut temp: Vec<IndexStruct> = vec![line];
             } else {
                 // Append to list
                 counter += line.scaffold_size;

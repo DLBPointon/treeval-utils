@@ -15,10 +15,10 @@ pub mod split_by_count_mod {
             let definition = fasta::record::Definition::new(header, None);
             let seq = records.sequence().to_owned();
 
-            return fasta::Record::new(definition, seq);
+            fasta::Record::new(definition, seq)
         } else {
-            return records.to_owned();
-        };
+            records.to_owned()
+        }
     }
 
     pub fn split_file_by_count(
