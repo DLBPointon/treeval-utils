@@ -70,7 +70,7 @@ jobs:
             - name: "Upload Binaries"
               uses: "taiki-e/upload-rust-binary-action@v1"
               with:
-                  bin: "fasta_manipulation"
+                  bin: "treeval-utils"
                   target: ${{ matrix.target }}
                   archive: $bin-${{ matrix.target }}
                   ref: refs/tags/v${{ needs.get-tag.outputs.pkg-version }}
