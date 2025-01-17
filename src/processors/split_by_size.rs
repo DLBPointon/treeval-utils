@@ -72,20 +72,21 @@ pub mod split_by_size_mod {
         sanitise: &bool,
         outpath: &String,
     ) -> io::Result<()> {
+        // Abstract this out to generics
         let data_type = match data_type {
-            DType::PEP => "pep",
-            DType::CDNA => "cdna",
-            DType::CDS => "cds",
-            DType::RNA => "rna",
-            DType::OTHER => {
+            DType::Pep => "pep",
+            DType::Cdna => "cdna",
+            DType::Cds => "cds",
+            DType::Rna => "rna",
+            DType::Other => {
                 panic!("NOT PLANNED FOR")
             }
         };
 
         let origin_db = match origin {
-            OriginType::OTHER => "na",
-            OriginType::ENSEMBL => "ensembl",
-            OriginType::NCBI => "NCBI",
+            OriginType::Other => "na",
+            OriginType::Ensembl => "ensembl",
+            OriginType::Ncbi => "NCBI",
         };
 
         let path_obj = Path::new(fasta_file);

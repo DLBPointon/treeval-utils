@@ -70,7 +70,7 @@ pub mod gencsv_mod {
         println!("{}", save_dir);
 
         let mut wtr = Writer::from_path(save_path)?;
-        wtr.write_record(&["org", "type", "data_file"])?;
+        wtr.write_record(["org", "type", "data_file"])?;
         for (_key, value) in dict_of_data {
             wtr.write_record(&value)?;
         }
@@ -79,7 +79,7 @@ pub mod gencsv_mod {
     }
 
     pub fn gencsv(geneset_folder: &String) -> io::Result<()> {
-        let clade_folder = get_folder_list(&geneset_folder);
+        let clade_folder = get_folder_list(geneset_folder);
 
         for clade in clade_folder {
             let save_clade = clade.clone();
@@ -95,7 +95,7 @@ pub mod gencsv_mod {
                 let mut master_list = Vec::new();
 
                 let accession_folder = get_folder_list(
-                    &<PathBuf as Clone>::clone(&org)
+                    &<PathBuf as Clone>::clone(org)
                         .into_os_string()
                         .into_string()
                         .unwrap(),

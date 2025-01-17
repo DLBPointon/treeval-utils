@@ -159,8 +159,8 @@ fn get_ensemble_symbol(header: String) -> Result<String, Box<dyn std::error::Err
 fn get_ncbi_symbol(header: String) -> Result<String, Box<dyn std::error::Error>> {
     println!("NCBI -- SANITISE HEADERS -- EXPERIMENTAL");
     // Take a string and return first segment of it
-    let header_list: Vec<&str> = header.split(' ').collect();
-    let record_header = header_list[0];
+    //let header_list: Vec<&str> = header.split(' ').collect();
+    //let record_header = header_list[0];
     //Ok(record_header[1..].to_owned())
 
     // Ugly nested Lazy Regex
@@ -176,13 +176,11 @@ fn get_ncbi_symbol(header: String) -> Result<String, Box<dyn std::error::Error>>
             .captures(&header)
             .and_then(|caps| caps.get(0))
             .map_or("NO_PROT_NAME", |m| m.as_str());
-        let final_header = if ncbi_prot_backup == "NO_PROT_NAME" {
+        if ncbi_prot_backup == "NO_PROT_NAME" {
             "".to_string()
         } else {
             format!("protein_id={};", ncbi_prot_backup)
-        };
-
-        final_header
+        }
     } else {
         format!("protein_id={};", ncbi_protein_name_capture)
     };
@@ -243,16 +241,8 @@ pub fn sanitise_header(old_header: &Definition, origin_db: &str) -> String {
     // ...again
     //
     let new_header = match origin_db {
-        "ensembl" => {
-            let header = get_ensemble_symbol(old_header.to_string());
-
-            header
-        }
-        "ncbi" => {
-            let header = get_ncbi_symbol(old_header.to_string());
-
-            header
-        }
+        "ensembl" => get_ensemble_symbol(old_header.to_string()),
+        "ncbi" => get_ncbi_symbol(old_header.to_string()),
         "other" => {
             panic!("What DB fasta do you want parsed?")
         }

@@ -45,7 +45,7 @@ pub mod yaml_validator_mod {
         phantom: PhantomData<&'a String>,
     }
 
-    impl<'a> std::fmt::Display for YamlResults<'a> {
+    impl std::fmt::Display for YamlResults<'_> {
         // Pretty Printing YamlResults
         fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
             write!(
@@ -65,6 +65,7 @@ pub mod yaml_validator_mod {
         }
     }
 
+    #[allow(elided_named_lifetimes)]
     impl<'a> YamlResults<'a> {
         fn is_cram_valid(&self) -> String {
             // this should add a field to the cram_results struct
@@ -583,9 +584,9 @@ pub mod yaml_validator_mod {
     /// Validate the yaml file required for the TreeVal pipeline
     pub fn validate_yaml(file: &String, out_type: &OType) -> io::Result<()> {
         let output_style = match out_type {
-            OType::FILE => "file",
-            OType::PIPELINE => "pipeline",
-            OType::STDOUT => "stdout",
+            OType::File => "file",
+            OType::Pipeline => "pipeline",
+            OType::StdOut => "stdout",
         };
 
         let output_file = "./yamlresults.txt".to_string();

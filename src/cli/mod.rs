@@ -14,25 +14,25 @@ const TUTILS_LOGO: &str = "
 
 #[derive(Copy, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum DType {
-    PEP,
-    CDNA,
-    RNA,
-    CDS,
-    OTHER,
+    Pep,
+    Cdna,
+    Rna,
+    Cds,
+    Other,
 }
 
 #[derive(Copy, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum OType {
-    FILE,
-    STDOUT,
-    PIPELINE,
+    File,
+    StdOut,
+    Pipeline,
 }
 
 #[derive(Copy, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum OriginType {
-    OTHER,
-    ENSEMBL,
-    NCBI,
+    Other,
+    Ensembl,
+    Ncbi,
 }
 
 // CLI

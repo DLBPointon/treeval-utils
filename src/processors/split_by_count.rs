@@ -15,10 +15,10 @@ pub mod split_by_count_mod {
             let definition = fasta::record::Definition::new(header, None);
             let seq = records.sequence().to_owned();
 
-            return fasta::Record::new(definition, seq);
+            fasta::Record::new(definition, seq)
         } else {
-            return records.to_owned();
-        };
+            records.to_owned()
+        }
     }
 
     pub fn split_file_by_count(
@@ -30,19 +30,19 @@ pub mod split_by_count_mod {
         outpath: &String,
     ) -> io::Result<()> {
         let data_type = match data_type {
-            DType::PEP => "pep",
-            DType::CDNA => "cdna",
-            DType::CDS => "cds",
-            DType::RNA => "rna",
-            DType::OTHER => {
+            DType::Pep => "pep",
+            DType::Cdna => "cdna",
+            DType::Cds => "cds",
+            DType::Rna => "rna",
+            DType::Other => {
                 panic!("NOT PLANNED FOR")
             }
         };
 
         let origin_db = match origin {
-            OriginType::OTHER => "na",
-            OriginType::ENSEMBL => "ensembl",
-            OriginType::NCBI => "NCBI",
+            OriginType::Other => "na",
+            OriginType::Ensembl => "ensembl",
+            OriginType::Ncbi => "NCBI",
         };
 
         let path_obj = Path::new(fasta_file);
