@@ -583,9 +583,9 @@ pub mod yaml_validator_mod {
     /// Validate the yaml file required for the TreeVal pipeline
     pub fn validate_yaml(file: &String, out_type: &OType) -> io::Result<()> {
         let output_style = match out_type {
-            OType::FILE => "file",
-            OType::PIPELINE => "pipeline",
-            OType::STDOUT => "stdout",
+            OType::File => "file",
+            OType::Pipeline => "pipeline",
+            OType::StdOut => "stdout",
         };
 
         let output_file = "./yamlresults.txt".to_string();
