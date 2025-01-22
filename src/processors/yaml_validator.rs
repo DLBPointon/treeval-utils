@@ -320,6 +320,7 @@ pub mod yaml_validator_mod {
                 .iter()
                 .map(|x| validate_paths(x))
                 .collect::<Vec<String>>();
+
             for i in main_path_check {
                 if i.contains("FAIL") {
                     // Check that the above top level dir is valid and if fail break function
