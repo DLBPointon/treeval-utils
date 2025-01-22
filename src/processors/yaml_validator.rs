@@ -332,7 +332,7 @@ pub mod yaml_validator_mod {
             let count_provided_syntenics = data.len();
             let bool_found_syntenics: Vec<bool> =
                 data.iter().map(|x| fs::metadata(x).is_ok()).collect();
-            let count_found_syntenics = bool_found_syntenics.iter().filter(|b| **b == true).count();
+            let count_found_syntenics = bool_found_syntenics.iter().filter(|b| **b).count();
 
             // Fall towards more pythonic style here
             if count_provided_syntenics < 1 {
