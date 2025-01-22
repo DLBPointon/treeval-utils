@@ -65,6 +65,8 @@ pub mod yaml_validator_mod {
         }
     }
 
+    // I assume this is because it exists in a newer version of rust, than I have locally to test
+    #[allow(unknown_lints)]
     #[allow(elided_named_lifetimes)]
     impl<'a> YamlResults<'a> {
         fn is_cram_valid(&self) -> String {
@@ -201,7 +203,7 @@ pub mod yaml_validator_mod {
         self_comp: SelfComp,
         intron: Intron,
         telomere: Telomere,
-        synteny: Synteny,
+        synteny: serde_yaml::Sequence,
         busco: Busco,
     }
 
@@ -270,26 +272,28 @@ pub mod yaml_validator_mod {
         /// TODO: validate the contents of the csv file.
         fn validate_genesets(&self) -> Vec<String> {
             let mut exist_tuple = Vec::new();
-            let genesets: Vec<&str> = self.alignment.geneset_id.split(',').collect();
+            let genesets: Result<Vec<String>, String> = self
+                .alignment
+                .genesets
+                .iter()
+                .map(|item| {
+                    item.as_str()
+                        .map(String::from)
+                        .ok_or_else(|| "Expected a string".to_string())
+                })
+                .collect();
 
-            for i in genesets {
-                // should probably be more of a if directory and csv file exist {pass} else {fail - check for csv and directory}
-                let species_name: Vec<&str> = self.alignment.geneset_id.split('.').collect();
+            let data = match genesets {
+                Ok(vec) => vec,
+                Err(err) => vec![err],
+            };
 
-                let full_geneset_path = format!(
-                    "{}/{}/{}",
-                    self.alignment.data_dir, self.assembly.defined_class, species_name[0]
-                );
-                exist_tuple.push(validate_paths(&full_geneset_path));
-
-                let full_geneset_csv = format!(
-                    "{}/{}/csv_data/{}-data.csv",
-                    self.alignment.data_dir, self.assembly.defined_class, i
-                );
-                exist_tuple.push(validate_paths(&full_geneset_csv));
-
-                exist_tuple.push(self.validate_csv(&full_geneset_csv))
+            #[allow(unused_variables)]
+            for i in data {
+                exist_tuple.push(validate_paths(i.as_str()));
+                exist_tuple.push(self.validate_csv(&i));
             }
+
             exist_tuple // shouldn't then use .all(|x| validate_paths(x)) to get one value because on fail we want to know which one
         }
 
@@ -297,42 +301,51 @@ pub mod yaml_validator_mod {
         fn validate_synteny(&self) -> Vec<String> {
             // Very similar to genesets
             let mut exist_tuple = Vec::new();
-            let syntenic_genomes: Vec<&str> = self.synteny.synteny_genomes.split(',').collect();
+            let syntenic_genomes: Result<Vec<String>, String> = self
+                .synteny
+                .iter()
+                .map(|item| {
+                    item.as_str()
+                        .map(String::from)
+                        .ok_or_else(|| "Expected a string".to_string())
+                })
+                .collect();
 
-            let path_to_genome = format!(
-                "{}/{}/",
-                self.synteny.synteny_path, self.assembly.defined_class
-            );
+            let data = match syntenic_genomes {
+                Ok(vec) => vec,
+                Err(err) => vec![err],
+            };
 
-            let main_path_check = validate_paths(&path_to_genome);
-            if main_path_check.contains("FAIL") {
-                // Check that the above top level dir is valid and if fail break function
-                exist_tuple.push(main_path_check);
-                return exist_tuple;
+            let main_path_check = &data
+                .iter()
+                .map(|x| validate_paths(x))
+                .collect::<Vec<String>>();
+
+            for i in main_path_check {
+                if i.contains("FAIL") {
+                    // Check that the above top level dir is valid and if fail break function
+                    exist_tuple.push(i.clone());
+                    return exist_tuple;
+                }
             }
 
-            // If the above is valid this second half of the function should then scan through the contents
-            let list_of_paths = fs::read_dir(&path_to_genome).unwrap();
-
-            let count_provided_syntenics = syntenic_genomes.len();
-            let count_found_syntenics = &list_of_paths.count();
+            let count_provided_syntenics = data.len();
+            let bool_found_syntenics: Vec<bool> =
+                data.iter().map(|x| fs::metadata(x).is_ok()).collect();
+            let count_found_syntenics = bool_found_syntenics.iter().filter(|b| **b).count();
 
             // Fall towards more pythonic style here
-            if count_provided_syntenics <= 1 {
+            if count_provided_syntenics < 1 {
                 exist_tuple.push("NO SYNTENICS PROVIDED".to_string());
                 exist_tuple
             } else {
                 // This is pretty cool, reformat the string into the required path and then run and return a function on each.
-                let mut full_paths: Vec<String> = syntenic_genomes
-                    .into_iter()
-                    .map(|x| format!("{}{}.fasta", path_to_genome, x))
-                    .map(|x| validate_paths(&x))
-                    .collect();
+                let mut full_paths: Vec<String> =
+                    data.into_iter().map(|x| validate_paths(&x)).collect();
 
                 full_paths.push(format!(
                     "AVAILABLE: {} | REQUESTED: {}",
-                    count_found_syntenics,
-                    exist_tuple.len()
+                    count_found_syntenics, count_provided_syntenics
                 ));
 
                 full_paths
@@ -526,9 +539,7 @@ pub mod yaml_validator_mod {
 
     #[derive(Debug, Serialize, Deserialize)]
     struct Alignment {
-        data_dir: String,
-        common_name: String, // Not yet in use
-        geneset_id: String,
+        genesets: serde_yaml::Sequence,
     }
 
     #[derive(Debug, Serialize, Deserialize)]
@@ -562,12 +573,6 @@ pub mod yaml_validator_mod {
     }
 
     #[derive(Debug, Serialize, Deserialize)]
-    struct Synteny {
-        synteny_path: String,
-        synteny_genomes: String,
-    }
-
-    #[derive(Debug, Serialize, Deserialize)]
     struct Busco {
         lineages_path: String,
         lineage: String,
@@ -593,9 +598,9 @@ pub mod yaml_validator_mod {
 
         println! {"Validating Yaml: {}", file.purple()};
 
-        let input = fs::File::open(file).expect("Unable to read from file");
+        let input = fs::File::open(file).expect("Unable to read from file: Code 1");
         let contents: TreeValYaml =
-            serde_yaml::from_reader(input).expect("Unable to read from file");
+            serde_yaml::from_reader(input).expect("Unable to read from file: Code 2");
 
         let results = contents.into_results();
 
