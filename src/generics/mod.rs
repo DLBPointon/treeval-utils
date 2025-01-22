@@ -180,11 +180,6 @@ fn get_ensemble_symbol(header: String) -> Result<String, Box<dyn std::error::Err
         "".to_string()
     };
 
-    let head = format!(
-        "{}{}{}{}",
-        final_prot_name, final_gene_id, final_trans_name, final_gene_name,
-    );
-    println!("{}", head);
     Ok(format!(
         "{}{}{}{}",
         final_prot_name, final_gene_id, final_trans_name, final_gene_name,
