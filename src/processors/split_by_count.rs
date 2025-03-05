@@ -42,7 +42,7 @@ pub mod split_by_count_mod {
         let origin_db = match origin {
             OriginType::Other => "na",
             OriginType::Ensembl => "ensembl",
-            OriginType::Ncbi => "NCBI",
+            OriginType::Ncbi => "ncbi",
         };
 
         let path_obj = Path::new(fasta_file);
