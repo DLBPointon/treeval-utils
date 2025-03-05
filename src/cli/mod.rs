@@ -53,7 +53,7 @@ pub struct Cli {
 pub enum Commands {
     #[command(
         name = "sizesplit",
-        about = format!("{}\nPrepare the Geneset data into the expected structure", TUTILS_LOGO),
+        about = "Prepare the Geneset data into the expected structure",
         long_about = format!("This function will split the input genome into chunks roughly equal to a user given amount of memory (given in bytes, e.g. 1000000 == 1mb). The input will be split into as close to the user given about as possible, for example if a scaffold is larger than 1mb, it will not be split up.")
     )]
     PrepGenesetBySize {
@@ -105,7 +105,7 @@ pub enum Commands {
     },
     #[command(
         name = "sizesplit2",
-        about = format!("{}\nPrepare the Geneset data into the expected structure", TUTILS_LOGO),
+        about = "Prepare the Geneset data into the expected structure",
         long_about = format!("This function will split the input genome into chunks roughly equal to a user given amount of memory (given in bytes, e.g. 1000000 == 1mb). The input will be split into as close to the user given about as possible, for example if a scaffold is larger than 1mb, it will not be split up.")
     )]
     PrepGenesetBySize2 {
@@ -158,7 +158,7 @@ pub enum Commands {
 
     #[command(
         name = "splitcount",
-        about = format!("{}\nPrepare the Geneset data into the expected structure", TUTILS_LOGO),
+        about = "Prepare the Geneset data into the expected structure",
         long_about = format!("Split the input genome into the user given number of records per file, e.g. -s 100 will split the genome into 100 records per file.")
     )]
     PrepGenesetByCount {
@@ -211,7 +211,7 @@ pub enum Commands {
 
     #[command(
         name = "generate_csv",
-        about = format!("{}\nGenerate a CSV file which describes the GENESET folder structure", TUTILS_LOGO),
+        about = "Generate a CSV file which describes the GENESET folder structure",
         long_about = "Given the directory containing the GENESET data, this function will generate csv's for each geneset contained inside"
     )]
     GenerateCSV {
@@ -226,7 +226,7 @@ pub enum Commands {
 
     #[command(
         name = "yaml_check",
-        about = format!("{}\nGenerate a CSV file which describes the GENESET folder structure", TUTILS_LOGO),
+        about = "Generate a CSV file which describes the GENESET folder structure",
         long_about = "Given the directory containing the GENESET data, this function will generate csv's for each geneset contained inside"
     )]
     YamlCheck {
