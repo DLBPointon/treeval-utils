@@ -194,7 +194,7 @@ fn get_ncbi_symbol(header: String) -> Result<String, Box<dyn std::error::Error>>
     //Ok(record_header[1..].to_owned())
 
     // Ugly nested Lazy Regex
-    static RE_1A: Lazy<Regex> = Lazy::new(|| Regex::new(r"(NP_\S+)\s").unwrap());
+    static RE_1A: Lazy<Regex> = Lazy::new(|| Regex::new(r"(NP_\S+)|(XP_\S+)").unwrap());
     static RE_1B: Lazy<Regex> = Lazy::new(|| Regex::new(r"\[protein_id=(.*?)\]").unwrap());
 
     let ncbi_protein_name_capture = RE_1A
